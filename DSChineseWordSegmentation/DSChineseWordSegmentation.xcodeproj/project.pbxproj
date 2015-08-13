@@ -70,7 +70,6 @@
 			isa = PBXGroup;
 			children = (
 				B913BBA51B798FCB00C95D96 /* main.swift */,
-				B942E5591B7B2B2D007EA821 /* CWSTrie.swift */,
 				B942E5541B7B20CD007EA821 /* Extension */,
 				B942E5551B7B20EC007EA821 /* Dictionary */,
 				B942E5561B7B20FF007EA821 /* Index */,
@@ -90,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				B9D2B2651B79E96900EF7D21 /* CWSDictionary.swift */,
+				B942E5591B7B2B2D007EA821 /* CWSTrie.swift */,
 				B942E55B1B7B2C43007EA821 /* CWSFirstCharNode.swift */,
 				B9D2B2671B79F4DF00EF7D21 /* CWSDicWord.swift */,
 			);

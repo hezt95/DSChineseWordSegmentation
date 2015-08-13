@@ -11,10 +11,7 @@ import Foundation
 
 func main() {
     var dic = CWSDictionary()
-    dic.displayNumOfDic()
-    for (key, value) in dic.fullDic {
-        println((key, value.char))
-    }
+//    dic.displayNumOfDic()
     system("say Mission Complete")
 }
 

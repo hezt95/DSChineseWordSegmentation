@@ -27,32 +27,24 @@ class CWSDictionary {
         println("There are \(index) items in dictionary")
     }
     
-    func getFirstCharFromWord(wordString: String) -> Character{
-        if wordString.isEmpty {
-            fatalError("No string input to this func")
-        } else {
-            var firstChar = wordString[wordString.startIndex]
-            return firstChar
-        }
-    }
-    
     init() {
         let fullString = CWSDictionary.readDicFile()
         fullArray = fullString.componentsSeparatedByString("\n")
         //the last item in the array is no use
         fullArray.removeAtIndex(fullArray.count - 1)
         fullDic = [:]
-        for item in fullArray {
-            var firstChar = getFirstCharFromWord(item)
+        for wordStr in fullArray {
+            var tempStr = wordStr
+            var firstChar = tempStr.removeAtIndex(tempStr.startIndex)
             var firstCharHash = firstChar.unicodeScalarCodePoint()
+            
             if fullDic[firstCharHash] == nil {
-                fullDic[firstCharHash] = CWSFirstCharNode(char: firstChar)
-                fullDic[firstCharHash]!.trieCounts++
+                fullDic[firstCharHash] = CWSFirstCharNode(creatWith: firstChar, leftStr: &tempStr)
             } else {
-                fullDic[firstCharHash]!.trieCounts++
+                
             }
+            
         }
     }
-    
 }
 
