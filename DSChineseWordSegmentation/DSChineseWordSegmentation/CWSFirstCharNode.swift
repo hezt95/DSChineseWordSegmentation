@@ -21,7 +21,7 @@ class CWSFirstCharNode {
     
     //init when the first char not in first char nodes
     //creat a branch directly
-    init(creatWith firstChar: Character,inout leftStr: String) {
+    init(creat firstChar: Character,inout leftStr: String) {
         self.key = firstChar
         trieCounts = 1
         trie = [CWSTrie]()
@@ -29,20 +29,32 @@ class CWSFirstCharNode {
         trie!.append(CWSTrie(creat: secondChar, leftStr: &leftStr))
     }
     
-    //actually the second char in the word
-    func addChildTire(key: Character, tempStr: String) {
-        var leftStr = tempStr
-        if trie != nil {
-            for item in self.trie! {
-                if key == item.key {
-                    leftStr.removeAtIndex(leftStr.startIndex)
-                }
+    //when there have the firstCharNode you should use this func
+    func addChildTire(inout leftStr: String) {
+        var secondChar = leftStr.removeAtIndex(leftStr.startIndex)
+        var secondCharIsAppear = false
+        for item in trie! {
+            if secondChar == item.key {
+                secondCharIsAppear = true
+                item.extendBranch(&leftStr)
+                break
             }
         }
-        leftStr.removeAtIndex(leftStr.startIndex)
-        trie!.append(CWSTrie(key: key))
-        trieCounts++
+        if secondCharIsAppear == false {
+            trie!.append(CWSTrie(creat: secondChar, leftStr: &leftStr))
+            self.trieCounts++
+        }
     }
     
+    func findSecondCharTrie(key: Character) -> CWSTrie? {
+        for item in trie! {
+            if key == item.key {
+                return item
+            } else {
+                return nil
+            }
+        }
+        return nil
+    }
     
 }

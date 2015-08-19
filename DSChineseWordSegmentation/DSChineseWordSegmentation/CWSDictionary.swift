@@ -9,13 +9,12 @@
 import Foundation
 
 class CWSDictionary {
-    var fullArray: Array<String>
+    var fullArray: [String]
     var fullDic: Dictionary<Int, CWSFirstCharNode>
 
     class func readDicFile() -> String {
-        let url = NSURL(fileURLWithPath: "/Users/hezitong/Projects/DSCurriculumDesign/codes/dic")!
-        println("Read from: " + String(stringInterpolationSegment: url))
-        let data = NSData(contentsOfURL: url)
+        println("Read from: " + String(stringInterpolationSegment: dicFileURL))
+        let data = NSData(contentsOfURL: dicFileURL)
         return NSString(data: data!, encoding: NSUTF8StringEncoding) as! String
     }
     
@@ -30,8 +29,6 @@ class CWSDictionary {
     init() {
         let fullString = CWSDictionary.readDicFile()
         fullArray = fullString.componentsSeparatedByString("\n")
-        //the last item in the array is no use
-        fullArray.removeAtIndex(fullArray.count - 1)
         fullDic = [:]
         for wordStr in fullArray {
             var tempStr = wordStr
@@ -39,9 +36,9 @@ class CWSDictionary {
             var firstCharHash = firstChar.unicodeScalarCodePoint()
             
             if fullDic[firstCharHash] == nil {
-                fullDic[firstCharHash] = CWSFirstCharNode(creatWith: firstChar, leftStr: &tempStr)
+                fullDic[firstCharHash] = CWSFirstCharNode(creat: firstChar, leftStr: &tempStr)
             } else {
-                
+                fullDic[firstCharHash]!.addChildTire(&tempStr)
             }
             
         }

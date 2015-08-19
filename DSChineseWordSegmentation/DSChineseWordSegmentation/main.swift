@@ -8,13 +8,17 @@
 
 import Foundation
 
-
+let dicFileURL = NSURL(fileURLWithPath: "/Users/hezitong/Projects/DSCurriculumDesign/codes/testDic_1")!
+let contentFileURL = NSURL(fileURLWithPath: "/Users/hezitong/Projects/DSCurriculumDesign/codes/testContent_1")!
 func main() {
     var dic = CWSDictionary()
-//    dic.displayNumOfDic()
+    var content = CWSContent(dic: dic)
+    for item in content.index {
+        print(item.key)
+        print(" ")
+    }
     system("say Mission Complete")
 }
-
 main()
 
 

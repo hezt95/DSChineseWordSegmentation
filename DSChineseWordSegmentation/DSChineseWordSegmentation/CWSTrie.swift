@@ -12,38 +12,43 @@ class CWSTrie {
     var key: Character
     var children: [CWSTrie]?
     var isFinal: Bool
+    var isWord: Bool
     var trieCounts: Int
     init(key: Character) {
         self.key = key
         children = [CWSTrie]()
         isFinal = true
+        isWord = false
         trieCounts = 0
     }
     
-    init(creat secondChar: Character,inout leftStr: String) {
-        self.key = secondChar
+    init(creat anotherChar: Character,inout leftStr: String) {
+        self.key = anotherChar
         children = [CWSTrie]()
         if leftStr.isEmpty {
             isFinal = true
+            isWord = true
             trieCounts = 0
         } else {
             isFinal = false
+            isWord = false
             trieCounts = 1
             self.creatNewBranch(&leftStr)
         }
     }
     
-    func creatNewBranch(inout leftChar: String) {
-        var newNode = CWSTrie(key: leftChar.removeAtIndex(leftChar.startIndex))
-        if leftChar.isEmpty {
+    func creatNewBranch(inout leftStr: String) {
+        var newNode = CWSTrie(key: leftStr.removeAtIndex(leftStr.startIndex))
+        if leftStr.isEmpty {
             newNode.isFinal = true
+            newNode.isWord = true
             newNode.trieCounts = 0
             self.children!.append(newNode)
         } else {
             newNode.isFinal = false
             newNode.trieCounts = 1
             self.children!.append(newNode)
-            for char in leftChar {
+            for char in leftStr {
                 newNode.children!.append(CWSTrie(key: char))
                 newNode = newNode.children![0]
                 newNode.isFinal = false
@@ -51,32 +56,50 @@ class CWSTrie {
             }
             //to the end
             newNode.isFinal = true
+            newNode.isWord = true
             newNode.trieCounts = 0
         }
         
     }
     
-    //this node is final in this branch
-    func setFinal() {
-        children = nil
-        isFinal = true
-        trieCounts = 0
-    }
-    //add a child node on this node
-    func addChild(key: Character, leftStr: String) {
-        for char in leftStr {
-            
-        }
-        if children != nil {
-            for item in self.children! {
-                if key == item.key {
-                    return
+    func extendBranch(inout leftStr:String) {
+        //self is the second char trie node
+        if self.isFinal == true {
+            //this moreChar is the 3rd char in a word
+            var moreChar = leftStr.removeAtIndex(leftStr.startIndex)
+            self.children!.append(CWSTrie(creat: moreChar, leftStr: &leftStr))
+            self.isFinal = false
+            self.trieCounts++
+        } else {
+            var leftTrie = self
+            var isSecondChar = true
+            for char in leftStr {
+                var charIsExist = false
+                if leftTrie.children!.isEmpty {
+                    leftTrie.children!.append(CWSTrie(key: char))
+                    leftTrie.isFinal = false
+                    leftTrie.trieCounts++
+                }
+                for item in leftTrie.children! {
+                    if char == item.key {
+                        leftTrie = item
+                        charIsExist = true
+                        isSecondChar = false
+                        break
+                    }
+                }
+                if !charIsExist {
+                    var moreChar = leftStr.removeAtIndex(leftStr.startIndex)
+                    leftTrie.children!.append(CWSTrie(creat: moreChar, leftStr: &leftStr))
+                    leftTrie.isFinal = false
+                    leftTrie.trieCounts++
+                    break
                 }
             }
+            if !isSecondChar {
+                leftTrie.isWord = true
+            }
         }
-        children!.append(CWSTrie(key: key))
-        isFinal = false
-        trieCounts++
     }
     
 }
