@@ -74,40 +74,43 @@ class CWSContent {
                 }
                 
             case .MoreChar:
-                var resultTrie = moreCharTrie.findMoreCharTrie(char)
+                //the first moreCharTrie is secondCharTrie
+                var resultTrie = moreCharTrie.findMoreCharTrie(char)//the resultTrie is child of moreCharTrie
                 if resultTrie != nil {
                     tempWord.append(char)
                     moreCharTrie = resultTrie!
                     status = SegmentStatus.MoreChar
                 } else {
-                    var deWord = String(tempWord.removeAtIndex(tempWord.startIndex))
-                    if secondCharTrie!.isWord {
-                        deWord.append(tempWord.removeAtIndex(tempWord.startIndex))
-                        index.append(CWSIndex(key: deWord))
-                        if !tempWord.isEmpty {
-                            index.append(CWSIndex(key: tempWord))
-                        }
-                    } else {
-                        var branchTrie = secondCharTrie
-                        for character in tempWord {
-                            if branchTrie == nil {
-                                index.append(CWSIndex(key: deWord))
-                            }
-                            if branchTrie!.isWord {
-                                deWord.append(tempWord.removeAtIndex(tempWord.startIndex))
-                                index.append(CWSIndex(key: deWord))
-                                status = SegmentStatus.WillFindWord
-                                deWord = String()
-                                branchTrie = branchTrie!.findMoreCharTrie(character)
-                            } else {
-                                deWord.append(tempWord.removeAtIndex(tempWord.startIndex))
-                                branchTrie = branchTrie!.findMoreCharTrie(character)
-                            }
-                        }
-
-                        
+                    if moreCharTrie.isWord {
+                        index.append(CWSIndex(key: tempWord))
+                        charHash = char.unicodeScalarCodePoint()
+                        if dic.fullDic[charHash] == nil {
+                            status = SegmentStatus.NotFoundInFirstCharNode
+                            tempWord = String(char)
+                        } else {
+                            status = SegmentStatus.TwoChar
+                            tempWord = String(char)
+                        } 
+                        break
                     }
-                    
+                    var deWord = String()
+                    deWord.append(tempWord.removeAtIndex(tempWord.startIndex))//tempWord head char is the temp whole word's second char
+                    deWord.append(tempWord.removeAtIndex(tempWord.startIndex))//tempWord head char is the temp whole word's third char
+                    if secondCharTrie!.isWord {
+                        index.append(CWSIndex(key: deWord))
+                        deWord = String()
+                    }
+                    var branchTrie = secondCharTrie
+                    for character in tempWord {
+                        branchTrie = branchTrie!.findMoreCharTrie(character)
+                        if branchTrie!.isWord {
+                            deWord.append(character)
+                            index.append(CWSIndex(key: deWord))
+                            deWord = String()
+                        } else {
+                            deWord.append(character)
+                        }
+                    }
                     charHash = char.unicodeScalarCodePoint()
                     if dic.fullDic[charHash] == nil {
                         status = SegmentStatus.NotFoundInFirstCharNode
