@@ -8,8 +8,8 @@
 
 import Foundation
 
-let dicFileURL = NSURL(fileURLWithPath: "/Users/hezitong/Projects/DSCurriculumDesign/codes/testDic_1")!
-let contentFileURL = NSURL(fileURLWithPath: "/Users/hezitong/Projects/DSCurriculumDesign/codes/testContent_1")!
+let dicFileURL = NSURL(fileURLWithPath: "/Users/hezitong/Projects/DSCurriculumDesign/codes/testDic")!
+let contentFileURL = NSURL(fileURLWithPath: "/Users/hezitong/Projects/DSCurriculumDesign/codes/testContent")!
 func main() {
     var dic = CWSDictionary()
     var content = CWSContent(dic: dic)

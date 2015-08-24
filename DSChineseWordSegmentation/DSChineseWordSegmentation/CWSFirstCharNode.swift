@@ -50,8 +50,6 @@ class CWSFirstCharNode {
         for item in trie! {
             if key == item.key {
                 return item
-            } else {
-                return nil
             }
         }
         return nil

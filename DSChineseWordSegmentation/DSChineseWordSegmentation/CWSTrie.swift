@@ -63,6 +63,9 @@ class CWSTrie {
     }
     
     func extendBranch(inout leftStr:String) {
+        if leftStr.isEmpty {
+            self.isWord = true
+        }
         //self is the second char trie node
         if self.isFinal == true {
             //this moreChar is the 3rd char in a word
@@ -100,6 +103,15 @@ class CWSTrie {
                 leftTrie.isWord = true
             }
         }
+    }
+    
+    func findMoreCharTrie(key: Character) -> CWSTrie? {
+        for item in children! {
+            if item.key == key {
+                return item
+            }
+        }
+        return nil
     }
     
 }
