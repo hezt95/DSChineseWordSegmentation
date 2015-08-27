@@ -44,7 +44,9 @@ class CWSContent {
                 }
                 
             case .NotFoundInFirstCharNode:
-                index.append(CWSIndex(key: tempWord))
+                //useless part
+//                index.append(CWSIndex(key: tempWord))
+                
                 charHash = char.unicodeScalarCodePoint()
                 if dic.fullDic[charHash] == nil {
                     status = SegmentStatus.NotFoundInFirstCharNode
@@ -62,7 +64,9 @@ class CWSContent {
                     moreCharTrie = secondCharTrie!
                     status = SegmentStatus.MoreChar
                 } else {
-                    index.append(CWSIndex(key: tempWord))
+                    //useless part
+//                    index.append(CWSIndex(key: tempWord))
+                    
                     charHash = char.unicodeScalarCodePoint()
                     if dic.fullDic[charHash] == nil {
                         status = SegmentStatus.NotFoundInFirstCharNode
@@ -92,6 +96,10 @@ class CWSContent {
                             tempWord = String(char)
                         } 
                         break
+                    }
+                    if !moreCharTrie.isFinal {
+                        //useless part in content
+//                        index.append(CWSIndex(key: tempWord))
                     }
                     var deWord = String()
                     deWord.append(tempWord.removeAtIndex(tempWord.startIndex))//tempWord head char is the temp whole word's second char
@@ -125,14 +133,14 @@ class CWSContent {
             }
         }
         if !tempWord.isEmpty {
-            index.append(CWSIndex(key: tempWord))
+            //useless part
+//            index.append(CWSIndex(key: tempWord))
         }
     }
     
     class func loadContent() -> String {
         var data = NSData(contentsOfURL: contentFileURL)
         var str = NSString(data: data!, encoding: NSUTF8StringEncoding) as! String
-        println(str)
         return str
     }
 }

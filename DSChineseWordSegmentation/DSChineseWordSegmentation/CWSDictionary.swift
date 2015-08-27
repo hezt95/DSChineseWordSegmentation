@@ -8,28 +8,36 @@
 
 import Foundation
 
-class CWSDictionary {
-    var fullArray: [String]
+@objc class CWSDictionary:NSObject, NSCoding {
     var fullDic: Dictionary<Int, CWSFirstCharNode>
 
+    required init(coder decoder: NSCoder) {
+        self.fullDic = (decoder.decodeObjectForKey("fullDic") as? Dictionary<Int, CWSFirstCharNode>)!
+    }
+    
+    func encodeWithCoder(encoder: NSCoder) {
+        encoder.encodeObject(self.fullDic, forKey: "fullDic")
+    }
+    
     class func readDicFile() -> String {
         println("Read from: " + String(stringInterpolationSegment: dicFileURL))
         let data = NSData(contentsOfURL: dicFileURL)
         return NSString(data: data!, encoding: NSUTF8StringEncoding) as! String
     }
     
-    func displayNumOfDic() {
+    func displayNumOfDic(array: [String]) {
         var index = 0
-        for item in fullArray {
+        for item in array {
             index++
         }
         println("There are \(index) items in dictionary")
     }
     
-    init() {
-        let fullString = CWSDictionary.readDicFile()
-        fullArray = fullString.componentsSeparatedByString("\n")
+    override init() {
         fullDic = [:]
+        super.init()
+        let fullString = CWSDictionary.readDicFile()
+        var fullArray = fullString.componentsSeparatedByString("\n")
         for wordStr in fullArray {
             var tempStr = wordStr
             var firstChar = tempStr.removeAtIndex(tempStr.startIndex)

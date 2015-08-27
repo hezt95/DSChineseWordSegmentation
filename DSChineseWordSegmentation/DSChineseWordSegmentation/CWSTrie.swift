@@ -8,12 +8,29 @@
 
 import Foundation
 
-class CWSTrie {
+@objc class CWSTrie: NSObject, NSCoding {
     var key: Character
     var children: [CWSTrie]?
     var isFinal: Bool
     var isWord: Bool
     var trieCounts: Int
+    
+    required init(coder decoder: NSCoder) {
+        key = Character(decoder.decodeObjectForKey("key_") as! String)
+        isFinal = decoder.decodeBoolForKey("isFinal")
+        isWord = decoder.decodeBoolForKey("isWord")
+        children = (decoder.decodeObjectForKey("children") as? [CWSTrie])!
+        trieCounts = Int(decoder.decodeIntForKey("trieCounts_"))
+    }
+    
+    func encodeWithCoder(encoder: NSCoder) {
+        encoder.encodeObject(children, forKey: "children")
+        encoder.encodeObject(String(key), forKey: "key_")
+        encoder.encodeBool(isFinal, forKey: "isFinal")
+        encoder.encodeBool(isWord, forKey: "isWord")
+        encoder.encodeInt(Int32(trieCounts), forKey: "trieCounts_")
+    }
+    
     init(key: Character) {
         self.key = key
         children = [CWSTrie]()
@@ -29,10 +46,12 @@ class CWSTrie {
             isFinal = true
             isWord = true
             trieCounts = 0
+            super.init()
         } else {
             isFinal = false
             isWord = false
             trieCounts = 1
+            super.init()
             self.creatNewBranch(&leftStr)
         }
     }

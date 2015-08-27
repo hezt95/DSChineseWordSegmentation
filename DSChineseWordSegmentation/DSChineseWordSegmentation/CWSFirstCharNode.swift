@@ -7,10 +7,22 @@
 //
 
 import Foundation
-class CWSFirstCharNode {
+@objc class CWSFirstCharNode: NSObject, NSCoding {
     var key: Character
     var trieCounts: Int
     var trie: [CWSTrie]?
+    
+    required init(coder decoder: NSCoder) {
+        trieCounts = Int(decoder.decodeIntForKey("trieCounts"))
+        key = Character(decoder.decodeObjectForKey("key") as! String)
+        trie = decoder.decodeObjectForKey("trie") as? [CWSTrie]
+    }
+    
+    func encodeWithCoder(encoder: NSCoder) {
+        encoder.encodeObject(trie, forKey: "trie")
+        encoder.encodeObject(String(key), forKey: "key")
+        encoder.encodeInt(Int32(trieCounts), forKey: "trieCounts")
+    }
     
     //no use init func
     init(key: Character) {
