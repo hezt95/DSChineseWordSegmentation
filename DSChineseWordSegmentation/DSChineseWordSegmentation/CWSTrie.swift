@@ -8,7 +8,7 @@
 
 import Foundation
 
-@objc class CWSTrie: NSObject, NSCoding {
+class CWSTrie {
     var key: Character
     var children: [CWSTrie]?
     var isFinal: Bool
@@ -46,12 +46,10 @@ import Foundation
             isFinal = true
             isWord = true
             trieCounts = 0
-            super.init()
         } else {
             isFinal = false
             isWord = false
             trieCounts = 1
-            super.init()
             self.creatNewBranch(&leftStr)
         }
     }

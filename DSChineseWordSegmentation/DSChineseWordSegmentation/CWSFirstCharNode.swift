@@ -7,7 +7,7 @@
 //
 
 import Foundation
-@objc class CWSFirstCharNode: NSObject, NSCoding {
+class CWSFirstCharNode {
     var key: Character
     var trieCounts: Int
     var trie: [CWSTrie]?

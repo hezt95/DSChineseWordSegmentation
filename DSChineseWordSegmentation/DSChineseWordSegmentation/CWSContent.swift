@@ -17,15 +17,32 @@ enum SegmentStatus {
 
 class CWSContent {
     var index: [CWSIndex]
-    var content: String
-    
+    var id: [String]
     init(dic: CWSDictionary) {
         index = [CWSIndex]()
-        content = CWSContent.loadContent()
-        self.segmentContent(dic)
+        id = [String]()
+        self.loadFiles()
+        for item in id {
+            var content = loadContent(item)
+            self.segmentContent(dic, content: content)
+        }
     }
     
-    func segmentContent(dic: CWSDictionary) {
+    func loadFiles() {
+        let filemanager:NSFileManager = NSFileManager()
+        let files = filemanager.enumeratorAtPath("/Users/hezitong/Projects/DSCurriculumDesign/codes/contents/")
+        while let file: AnyObject = files?.nextObject() {
+            id.append(file as! String)
+        }
+    }
+    
+    func loadContent(id: String) -> String {
+        var urlStr = "/Users/hezitong/Projects/DSCurriculumDesign/codes/contents/" + id
+        let data = NSData(contentsOfFile: urlStr)
+        return NSString(data: data!, encoding: NSUTF8StringEncoding) as! String
+    }
+    
+    func segmentContent(dic: CWSDictionary, content: String) {
         var status = SegmentStatus.WillFindWord
         var tempWord = String()
         var charHash: Int
@@ -138,9 +155,4 @@ class CWSContent {
         }
     }
     
-    class func loadContent() -> String {
-        var data = NSData(contentsOfURL: contentFileURL)
-        var str = NSString(data: data!, encoding: NSUTF8StringEncoding) as! String
-        return str
-    }
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-@objc class CWSDictionary:NSObject, NSCoding {
+class CWSDictionary {
     var fullDic: Dictionary<Int, CWSFirstCharNode>
 
     required init(coder decoder: NSCoder) {
@@ -17,6 +17,39 @@ import Foundation
     
     func encodeWithCoder(encoder: NSCoder) {
         encoder.encodeObject(self.fullDic, forKey: "fullDic")
+    }
+    
+    class func hashable() {
+        var str = readDicFile()
+        var array = str.componentsSeparatedByString("\n")
+        var hashArray = [UInt64]()
+        var count = 0
+        for item in array {
+            for char in array {
+                if item.hashValue == char.hashValue {
+                    count++
+                }
+            }
+        }
+//        for item in array {
+//            var hash = UInt64(5381)
+//            for char in item.unicodeScalars {
+//                hash = ((hash << 5) + hash) + UInt64(char.value)
+//                println(hash)
+//            }
+//           hashArray.append(hash)
+//        }
+        println(hashArray.count)
+//        var count = 0
+//        var tempArray = hashArray
+//        for item in hashArray {
+//            for itema in tempArray {
+//                if item == itema {
+//                    count++
+//                }
+//            }
+//        }
+        println(count)
     }
     
     class func readDicFile() -> String {
@@ -33,9 +66,8 @@ import Foundation
         println("There are \(index) items in dictionary")
     }
     
-    override init() {
+    init() {
         fullDic = [:]
-        super.init()
         let fullString = CWSDictionary.readDicFile()
         var fullArray = fullString.componentsSeparatedByString("\n")
         for wordStr in fullArray {
