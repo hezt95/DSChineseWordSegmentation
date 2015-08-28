@@ -11,19 +11,19 @@ import Foundation
 let dicFileURL = NSURL(fileURLWithPath: "/Users/hezitong/Projects/DSCurriculumDesign/codes/dic")!
 let contentFileURL = NSURL(fileURLWithPath: "/Users/hezitong/Projects/DSCurriculumDesign/codes/content/")!
 func main() {
-//    println("Start")
-//    system("date +%s")
-//    var dic = CWSDictionary()
-////    NSKeyedArchiver.archiveRootObject(dic, toFile: "/Users/hezitong/Projects/DSCurriculumDesign/codes/hahaha")
-////    var dic = NSKeyedUnarchiver.unarchiveObjectWithFile("/Users/hezitong/Projects/DSCurriculumDesign/codes/hahaha") as! CWSDictionary
-//    println("dic finish")
-//    system("date +%s")
-//    var content = CWSContent(dic: dic)
-//    println("content finish")
-//    system("date +%s")
-//    system("say Mission Complete")
-    CWSDictionary.hashable()
+    var dic = CWSDictionary()
+    var content = CWSContent(dic: dic)
+    for (hash, index) in content.indexDic {
+        println("\(hash): \(index.key)")
+        for item in index.id {
+            print(item)
+            print(" ")
+        }
+        print("\n")
+    }
+    system("say Mission Complete")
 }
+
 main()
 
 

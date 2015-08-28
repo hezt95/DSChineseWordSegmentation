@@ -11,16 +11,21 @@ import Foundation
 class CWSIndex {
     var key: String
     var id: [String]
-    var url: [String]
-    init(key: String) {
+    init(creat key: String, with id: String) {
         self.key = key
-        url = [String]()
-        id = [String]()
+        self.id = [String]()
+        self.id.append(id)
     }
     
-    func displayHtmlURL() {
-        for item in url {
-            println(item)
+    func addID(id: String) {
+        var isExist = false
+        for item in self.id {
+            if item == id {
+                isExist = true
+            }
+        }
+        if isExist == false {
+            self.id.append(id)
         }
     }
     

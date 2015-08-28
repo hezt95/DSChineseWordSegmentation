@@ -23,33 +23,31 @@ class CWSDictionary {
         var str = readDicFile()
         var array = str.componentsSeparatedByString("\n")
         var hashArray = [UInt64]()
-        var count = 0
         for item in array {
-            for char in array {
-                if item.hashValue == char.hashValue {
-                    count++
+            var i = 0
+            var hash = UInt64(0)
+            for scalar in item.unicodeScalars {
+                if (i & 1) == 0 {
+                    hash ^= ((hash << 7) ^ UInt64(scalar.hashValue) ^ (hash >> 3))
+                } else {
+                    hash ^= (~((hash << 11) ^ UInt64(scalar.hashValue) ^ (hash >> 5)))
+                }
+                i++
+                hash = hash & 0x7FFFFFFF
+            }
+            hashArray.append(hash)
+        }
+        println(hashArray.count)
+        
+        for var i = 0; i < hashArray.count; i++ {
+            for var j = 0; j < hashArray.count; j++ {
+                if i != j {
+                    if hashArray[i] == hashArray[j] {
+                        println("Error")
+                    }
                 }
             }
         }
-//        for item in array {
-//            var hash = UInt64(5381)
-//            for char in item.unicodeScalars {
-//                hash = ((hash << 5) + hash) + UInt64(char.value)
-//                println(hash)
-//            }
-//           hashArray.append(hash)
-//        }
-        println(hashArray.count)
-//        var count = 0
-//        var tempArray = hashArray
-//        for item in hashArray {
-//            for itema in tempArray {
-//                if item == itema {
-//                    count++
-//                }
-//            }
-//        }
-        println(count)
     }
     
     class func readDicFile() -> String {

@@ -16,15 +16,15 @@ enum SegmentStatus {
 }
 
 class CWSContent {
-    var index: [CWSIndex]
     var id: [String]
+    var indexDic: Dictionary<UInt64, CWSIndex>
     init(dic: CWSDictionary) {
-        index = [CWSIndex]()
         id = [String]()
+        indexDic = [:]
         self.loadFiles()
         for item in id {
             var content = loadContent(item)
-            self.segmentContent(dic, content: content)
+            self.segmentContent(dic, content: content, with: item)
         }
     }
     
@@ -37,12 +37,16 @@ class CWSContent {
     }
     
     func loadContent(id: String) -> String {
+        if id == ".DS_Store" {
+            //DS_Store is useless
+            return ""
+        }
         var urlStr = "/Users/hezitong/Projects/DSCurriculumDesign/codes/contents/" + id
         let data = NSData(contentsOfFile: urlStr)
         return NSString(data: data!, encoding: NSUTF8StringEncoding) as! String
     }
     
-    func segmentContent(dic: CWSDictionary, content: String) {
+    func segmentContent(dic: CWSDictionary, content: String, with id: String) {
         var status = SegmentStatus.WillFindWord
         var tempWord = String()
         var charHash: Int
@@ -103,7 +107,12 @@ class CWSContent {
                     status = SegmentStatus.MoreChar
                 } else {
                     if moreCharTrie.isWord {
-                        index.append(CWSIndex(key: tempWord))
+                        var hash = CWSContent.hash(tempWord)
+                        if indexDic[hash] == nil {
+                            indexDic[hash] = CWSIndex(creat: tempWord, with: id)
+                        } else {
+                            indexDic[hash]!.addID(id)
+                        }
                         charHash = char.unicodeScalarCodePoint()
                         if dic.fullDic[charHash] == nil {
                             status = SegmentStatus.NotFoundInFirstCharNode
@@ -122,7 +131,12 @@ class CWSContent {
                     deWord.append(tempWord.removeAtIndex(tempWord.startIndex))//tempWord head char is the temp whole word's second char
                     deWord.append(tempWord.removeAtIndex(tempWord.startIndex))//tempWord head char is the temp whole word's third char
                     if secondCharTrie!.isWord {
-                        index.append(CWSIndex(key: deWord))
+                        var hash = CWSContent.hash(tempWord)
+                        if indexDic[hash] == nil {
+                            indexDic[hash] = CWSIndex(creat: tempWord, with: id)
+                        } else {
+                            indexDic[hash]!.addID(id)
+                        }
                         deWord = String()
                     }
                     var branchTrie = secondCharTrie
@@ -130,7 +144,13 @@ class CWSContent {
                         branchTrie = branchTrie!.findMoreCharTrie(character)
                         if branchTrie!.isWord {
                             deWord.append(character)
-                            index.append(CWSIndex(key: deWord))
+                            var hash = CWSContent.hash(tempWord)
+                            if indexDic[hash] == nil {
+                                indexDic[hash] = CWSIndex(creat: tempWord, with: id)
+                            } else {
+                                indexDic[hash]!.addID(id)
+                            }
+
                             deWord = String()
                         } else {
                             deWord.append(character)
@@ -153,6 +173,21 @@ class CWSContent {
             //useless part
 //            index.append(CWSIndex(key: tempWord))
         }
+    }
+    
+    class func hash(string: String) -> UInt64 {
+        var i = 0
+        var hash = UInt64(0)
+        for scalar in string.unicodeScalars {
+            if (i & 1) == 0 {
+                hash ^= ((hash << 7) ^ UInt64(scalar.hashValue) ^ (hash >> 3))
+            } else {
+                hash ^= (~((hash << 11) ^ UInt64(scalar.hashValue) ^ (hash >> 5)))
+            }
+            i++
+            hash = hash & 0x7FFFFFFF
+        }
+        return hash
     }
     
 }
